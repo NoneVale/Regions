@@ -1,0 +1,16 @@
+name: Regions
+version: ${version}
+main: net.nighthawkempires.regions.RegionsPlugin
+description: Nighthawk Empires' Regions Plugin.
+author: NoneVale_
+api-version: 1.15
+depend: [Core]
+commands:
+  portal:
+    aliases: [portals]
+    usage: </command>
+    description: Balance command for Nighthawk Empires' Economy Plugin.
+  region:
+    aliases: [regions]
+    usage: </command>
+    description: Economy command for Nighthawk Empires' Economy Plugin.
