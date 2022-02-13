@@ -8,10 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityPotionEffectEvent.Cause;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -145,6 +142,20 @@ public class RegionListener implements Listener {
                     }
                 }
                 break;
+        }
+    }
+
+    @EventHandler
+    public void onFade(BlockFadeEvent event) {
+        if (event.getBlock().getType() != null) {
+            RegionModel region = getRegionRegistry().getObeyRegion(event.getBlock().getLocation());
+            if (region != null) {
+                if (event.getBlock().getType() == Material.FARMLAND) {
+                    if (region.getFlagResult(CROP_TRAMPLE) == DENY) {
+                        event.setCancelled(true);
+                    }
+                }
+            }
         }
     }
 

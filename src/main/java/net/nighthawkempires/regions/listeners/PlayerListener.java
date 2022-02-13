@@ -35,14 +35,14 @@ public class PlayerListener implements Listener {
                         if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                             Location location = event.getClickedBlock().getLocation();
                             if (clipboard.getType() == SelectionType.REGION)
-                                location.setY(0);
+                                location.setY(location.getWorld().getMinHeight());
                             clipboard.setFirstCorner(location);
                             player.sendMessage(getMessages().getChatMessage(GRAY + "You have selected the first corner at "
                                     + locationName(location) + GRAY + "."));
                         } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                             Location location = event.getClickedBlock().getLocation();
                             if (clipboard.getType() == SelectionType.REGION)
-                                location.setY(256);
+                                location.setY(location.getWorld().getMaxHeight());
                             clipboard.setSecondCorner(location);
                             player.sendMessage(getMessages().getChatMessage(GRAY + "You have selected the second corner at "
                                     + locationName(location) + GRAY + "."));
