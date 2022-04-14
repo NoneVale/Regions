@@ -3,14 +3,22 @@ version: ${version}
 main: net.nighthawkempires.regions.RegionsPlugin
 description: Nighthawk Empires' Regions Plugin.
 author: NoneVale_
-api-version: 1.15
+api-version: 1.18
 depend: [Core]
 commands:
+  pasteschematic:
+    aliases: [pasteschem, pschem]
+    usage: </command>
+    description: Paste Schematic command for Nighthawk Empires' Regions Plugin
   portal:
     aliases: [portals]
     usage: </command>
-    description: Balance command for Nighthawk Empires' Economy Plugin.
+    description: Portal command for Nighthawk Empires' Regions Plugin.
   region:
     aliases: [regions]
     usage: </command>
-    description: Economy command for Nighthawk Empires' Economy Plugin.
+    description: Region command for Nighthawk Empires' Regions Plugin.
+  saveschematic:
+    aliases: [saveschem, sschem]
+    usage: </command>
+    description: Save Schematic command for Nighthawk Empires' Regions Plugin.

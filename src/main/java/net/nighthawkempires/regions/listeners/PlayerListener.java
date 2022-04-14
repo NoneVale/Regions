@@ -2,11 +2,9 @@ package net.nighthawkempires.regions.listeners;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import net.nighthawkempires.core.CorePlugin;
 import net.nighthawkempires.regions.RegionsPlugin;
 import net.nighthawkempires.regions.selection.Clipboard;
 import net.nighthawkempires.regions.selection.SelectionType;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +25,7 @@ public class PlayerListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
-        if (player.hasPermission("ne.portals") || player.hasPermission("ne.regions")) {
+        if (player.hasPermission("ne.portals") || player.hasPermission("ne.regions") || player.hasPermission("ne.schematic")) {
             if (player.getInventory().getItemInMainHand().equals(getSelectionManager().getSelectionWand())) {
                 if (getSelectionManager().hasClipboard(player.getUniqueId())) {
                     Clipboard clipboard = getSelectionManager().getClipboard(player.getUniqueId());
@@ -72,7 +70,7 @@ public class PlayerListener implements Listener {
                         if (event.getMessage().toLowerCase().equals("yes")) {
                             if (clipboard.getType() == SelectionType.REGION) {
                                 if (getRegionRegistry().regionExists(clipboard.getName())) {
-                                    player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but a region with that name already exists."));
+                                    player.sendMessage(getMessages().getChatMessage(RED + "I'm sorry, but a region with that name already exists."));
                                     player.getInventory().setHeldItemSlot(clipboard.getSlot());
                                     player.getInventory().setItem(clipboard.getSlot(), clipboard.getSlotRestore());
                                     getSelectionManager().deleteClipboard(player.getUniqueId());
@@ -85,7 +83,7 @@ public class PlayerListener implements Listener {
                                         + " has been successfully created."));
                             } else if (clipboard.getType() == SelectionType.PORTAL) {
                                 if (getPortalRegistry().portalExists(clipboard.getName())) {
-                                    player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but a portal with that name already exists."));
+                                    player.sendMessage(getMessages().getChatMessage(RED + "I'm sorry, but a portal with that name already exists."));
                                     player.getInventory().setHeldItemSlot(clipboard.getSlot());
                                     player.getInventory().setItem(clipboard.getSlot(), clipboard.getSlotRestore());
                                     getSelectionManager().deleteClipboard(player.getUniqueId());
@@ -96,6 +94,19 @@ public class PlayerListener implements Listener {
                                 getPortalRegistry().createPortal(clipboard.getName(), clipboard.getFirstCorner(), clipboard.getSecondCorner());
                                 player.sendMessage(getMessages().getChatMessage(GRAY + "Portal " + WHITE + clipboard.getName() + GRAY
                                         + " has been successfully created."));
+                            } else if (clipboard.getType() == SelectionType.SCHEMATIC) {
+                                if (getSchematicRegistry().schematicExists(clipboard.getName())) {
+                                    player.sendMessage(getMessages().getChatMessage(RED + "I'm sorry, but a schematic with that name already exists."));
+                                    player.getInventory().setHeldItemSlot(clipboard.getSlot());
+                                    player.getInventory().setItem(clipboard.getSlot(), clipboard.getSlotRestore());
+                                    getSelectionManager().deleteClipboard(player.getUniqueId());
+                                    getChatFormat().setCancelled(event.getMessage(), true);
+                                    return;
+                                }
+
+                                getSchematicRegistry().createSchematic(clipboard.getName(), clipboard.getFirstCorner(), clipboard.getSecondCorner());
+                                player.sendMessage(getMessages().getChatMessage(GRAY + "Schematic " + WHITE + clipboard.getName() + GRAY
+                                        + " has been successfully saved."));
                             }
 
                             player.getInventory().setHeldItemSlot(clipboard.getSlot());

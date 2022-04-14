@@ -1,7 +1,9 @@
 package net.nighthawkempires.regions;
 
+import net.nighthawkempires.regions.commands.PasteSchematicCommand;
 import net.nighthawkempires.regions.commands.PortalCommand;
 import net.nighthawkempires.regions.commands.RegionCommand;
+import net.nighthawkempires.regions.commands.SaveSchematicCommand;
 import net.nighthawkempires.regions.data.BungeeData;
 import net.nighthawkempires.regions.listeners.BungeeListener;
 import net.nighthawkempires.regions.listeners.PlayerListener;
@@ -11,7 +13,10 @@ import net.nighthawkempires.regions.portal.registry.FPortalRegistry;
 import net.nighthawkempires.regions.portal.registry.PortalRegistry;
 import net.nighthawkempires.regions.region.registry.FRegionRegistry;
 import net.nighthawkempires.regions.region.registry.RegionRegistry;
+import net.nighthawkempires.regions.schematic.registry.FSchematicRegistry;
+import net.nighthawkempires.regions.schematic.registry.SchematicRegistry;
 import net.nighthawkempires.regions.selection.SelectionManager;
+import net.nighthawkempires.regions.tabcompleters.PasteSchematicTabCompleter;
 import net.nighthawkempires.regions.tabcompleters.PortalTabCompleter;
 import net.nighthawkempires.regions.tabcompleters.RegionTabCompleter;
 import org.bukkit.Bukkit;
@@ -26,6 +31,7 @@ public class RegionsPlugin extends JavaPlugin {
 
     private static PortalRegistry portalRegistry;
     private static RegionRegistry regionRegistry;
+    private static SchematicRegistry schematicRegistry;
 
     private static SelectionManager selectionManager;
 
@@ -40,6 +46,7 @@ public class RegionsPlugin extends JavaPlugin {
         getPortalRegistry().loadAllFromDb();
         regionRegistry = new FRegionRegistry();
         getRegionRegistry().loadAllFromDb();
+        schematicRegistry = new FSchematicRegistry();
 
         selectionManager = new SelectionManager();
 
@@ -53,8 +60,10 @@ public class RegionsPlugin extends JavaPlugin {
     }
 
     public void registerCommands() {
+        this.getCommand("pasteschematic").setExecutor(new PasteSchematicCommand());
         this.getCommand("portal").setExecutor(new PortalCommand());
         this.getCommand("region").setExecutor(new RegionCommand());
+        this.getCommand("saveschematic").setExecutor(new SaveSchematicCommand());
     }
 
     public void registerListeners() {
@@ -70,6 +79,7 @@ public class RegionsPlugin extends JavaPlugin {
     }
 
     public void registerTabCompleters() {
+        this.getCommand("pasteschematic").setTabCompleter(new PasteSchematicTabCompleter());
         this.getCommand("portal").setTabCompleter(new PortalTabCompleter());
         this.getCommand("region").setTabCompleter(new RegionTabCompleter());
     }
@@ -80,6 +90,10 @@ public class RegionsPlugin extends JavaPlugin {
 
     public static RegionRegistry getRegionRegistry() {
         return regionRegistry;
+    }
+
+    public static SchematicRegistry getSchematicRegistry() {
+        return schematicRegistry;
     }
 
     public static SelectionManager getSelectionManager() {

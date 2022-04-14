@@ -11,7 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.EntityPotionEffectEvent.Cause;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import static net.nighthawkempires.core.CorePlugin.*;
@@ -67,7 +69,43 @@ public class RegionListener implements Listener {
         if (region != null && !region.getBypassRegion().contains(player.getUniqueId())) {
             if (region.inRegion(event.getBlock().getLocation()) || region.inRegion(player.getLocation())) {
                 if (region.getFlagResult(BREAK) == DENY) {
-                    player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but you're not allowed to place blocks in this region."));
+                    player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but you're not allowed to break blocks in this region."));
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBucket(PlayerBucketEmptyEvent event) {
+        Player player = event.getPlayer();
+
+        RegionModel region = getRegionRegistry().getObeyRegion(player.getLocation());
+        if (region != null && !region.getBypassRegion().contains(player.getUniqueId())) {
+            if (region.inRegion(event.getBlock().getLocation()) || region.inRegion(player.getLocation())) {
+                if (region.getFlagResult(BREAK) == DENY) {
+                    player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but you're not allowed to use buckets in this region."));
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+
+        region = getRegionRegistry().getObeyRegion(event.getBlock().getLocation());
+        if (region != null && !region.getBypassRegion().contains(player.getUniqueId())) {
+            if (region.inRegion(event.getBlock().getLocation()) || region.inRegion(player.getLocation())) {
+                if (region.getFlagResult(BREAK) == DENY) {
+                    player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but you're not allowed to use buckets in this region."));
+                    event.setCancelled(true);
+                }
+            }
+        }
+
+        region = getRegionRegistry().getObeyRegion(event.getBlockClicked().getLocation());
+        if (region != null && !region.getBypassRegion().contains(player.getUniqueId())) {
+            if (region.inRegion(event.getBlock().getLocation()) || region.inRegion(player.getLocation())) {
+                if (region.getFlagResult(BREAK) == DENY) {
+                    player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but you're not allowed to use buckets in this region."));
                     event.setCancelled(true);
                 }
             }
@@ -135,6 +173,21 @@ public class RegionListener implements Listener {
                             }
                         } else if (event.getClickedBlock().getType() == Material.LEVER) {
                             if (region.getFlagResult(INTERACT_LEVER) == DENY) {
+                                player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but you can not interact with that here."));
+                                event.setCancelled(true);
+                            }
+                        } else if (event.getClickedBlock().getType() == Material.ANVIL
+                                || event.getClickedBlock().getType() == Material.CHIPPED_ANVIL
+                                || event.getClickedBlock().getType() == Material.DAMAGED_ANVIL) {
+                            if (region.getFlagResult(INTERACT_ANVIL) == DENY) {
+                                player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but you can not interact with that here."));
+                                event.setCancelled(true);
+                            }
+                        } else if (event.getClickedBlock().getType() == Material.CAULDRON
+                                || event.getClickedBlock().getType() == Material.LAVA_CAULDRON
+                                || event.getClickedBlock().getType() == Material.POWDER_SNOW_CAULDRON
+                                || event.getClickedBlock().getType() == Material.WATER_CAULDRON) {
+                            if (region.getFlagResult(INTERACT_CAULDRON) == DENY) {
                                 player.sendMessage(getMessages().getChatMessage(GRAY + "I'm sorry, but you can not interact with that here."));
                                 event.setCancelled(true);
                             }
@@ -412,6 +465,17 @@ public class RegionListener implements Listener {
                 if (region.getFlagResult(MOB_DAMAGE) == DENY) {
                     event.setCancelled(true);
                 }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBookTake(PlayerTakeLecternBookEvent event) {
+        Player player = event.getPlayer();
+        RegionModel region = getRegionRegistry().getObeyRegion(player.getLocation());
+        if (region != null && !region.getBypassRegion().contains(player.getUniqueId())) {
+            if (region.getFlagResult(LECTERN_TAKE_BOOK) == DENY) {
+                event.setCancelled(true);
             }
         }
     }
